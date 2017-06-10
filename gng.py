@@ -10,8 +10,7 @@ app.secret_key = 'a456lkas-049amp08a349u#$%ams'
 
 def getrandomnum():
     import random
-    random_num = random.randint(1, 100)
-    return 'random_num'
+    return random.randint(1, 100)
 
 @app.route('/')
 def greatnumbergame():
@@ -19,20 +18,40 @@ def greatnumbergame():
 
 @app.route('/checknumbers', methods=['post'])
 def checknumbers():
-    print "got post info"
-    print request.form
-    session['guess'] = guess
-    #get a number
-    highlowwin = ""
-    itsnumber = getrandomnum()
-    guess = session['guess']
-    if itsnumber == guess:
-        highlowwin = "win"
-    elif guess < itsnumber:
-        highlowwin = "high"
-    elif guess < itsnumber:
-        highlowwin = "low"
-    return redirect('/', highlowwin)
+    print "===line 21 got post info==="
+    print "=== line 22 ===",request.form
+    guess = 0
+    random = 0
+    guess = int(request.form['guess'])
+    print "==line 26 Guess is==", guess
 
+    if session['npcnum'] == 0:
+        print "=== line 29 npcnum0=== ", session['npcnum']
+        session['npcnum'] = getrandomnum()
+        print "===line 31 npcnum1=== ", session['npcnum']
+        random = session['npcnum']
+        print "===line 33 npcnum2=== ", session['npcnum']
+        print "===line 34 random0=== ", session['npcnum']
+    else:
+        random = session['npcnum']
+        print "===line 28 did not run==="
+
+    print "==line 39 Randomnum is==", session['npcnum']
+
+    if random == guess:
+        print "===line 39 random is===: ", random
+        print "===line 40 guess is ===: ", guess
+        print "===line 41 I see a win==="
+        return redirect('/')
+    elif random > guess:
+        print "===line 43 random is===: ", random
+        print "===line 44 guess is ===: ", guess
+        print "===line 45 I see you're too low==="
+        return redirect('/')
+    elif random < guess:
+        print "===line 47 random is===: ", random
+        print "===line 48 guess is ===: ", guess
+        print "===line 49 I see you're too high.==="
+        return redirect('/')
 
 app.run(debug=True)
