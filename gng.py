@@ -2,10 +2,10 @@
 Coding Dojo, Python and Flask fundamentals. Studying session data.
 Troy Center troycenter1@gmail.com June 2017'''
 #pylint: disable=c0111,c0103
-import warnings
+import os
 from flask import Flask, render_template, session, request, redirect
 app = Flask(__name__)
-app.secret_key = 'a456lkas-049amp08a349u#$%ams'
+app.secret_key = 'kljasldjlaskjdlkasjdlkjasdlkj'
 def getrandomnum():
     import random
     return random.randint(1, 100)
@@ -18,10 +18,12 @@ def gamesetup():
     windisplay = "none"
     lowdisplay = "none"
     highdisplay = "none"
+    currandom = 0
     session['gameon'] = False
     return render_template('gng.html', startdisplay=startdisplay,
                            errordisplay=errordisplay, windisplay=windisplay,
-                           lowdisplay=lowdisplay, highdisplay=highdisplay)
+                           lowdisplay=lowdisplay, highdisplay=highdisplay,
+                           currandom=currandom)
 
 @app.route('/checknumbers', methods=['post'])
 def checknumbers():
@@ -59,7 +61,8 @@ def checknumbers():
             session['gameon'] = False
             return render_template('gng.html', startdisplay=startdisplay,
                                    errordisplay=errordisplay, windisplay=windisplay,
-                                   lowdisplay=lowdisplay, highdisplay=highdisplay)
+                                   lowdisplay=lowdisplay, highdisplay=highdisplay,
+                                   currandom=currandom)
         elif currandom > guess:
             print "64--- currandom = ", currandom, " and guess = ", guess, " ---"
             startdisplay = "none"
@@ -76,7 +79,8 @@ def checknumbers():
             print "76 session gameon = ", session['gameon']
             return render_template('gng.html', startdisplay=startdisplay,
                                    errordisplay=errordisplay, windisplay=windisplay,
-                                   lowdisplay=lowdisplay, highdisplay=highdisplay)
+                                   lowdisplay=lowdisplay, highdisplay=highdisplay,
+                                   currandom=currandom)
         elif currandom < guess:
             print "81 --- currandom = ", currandom, " and guess = ", guess, " ---"
             startdisplay = "none"
@@ -93,7 +97,8 @@ def checknumbers():
             print "93 session game on is ", session['gameon']
             return render_template('gng.html', startdisplay=startdisplay,
                                    errordisplay=errordisplay, windisplay=windisplay,
-                                   lowdisplay=lowdisplay, highdisplay=highdisplay)
+                                   lowdisplay=lowdisplay, highdisplay=highdisplay,
+                                   currandom=currandom)
     except:
         startdisplay = "none"
         errordisplay = "block"
@@ -104,8 +109,8 @@ def checknumbers():
         session['random'] = currandom
         return render_template('gng.html', startdisplay=startdisplay,
                                errordisplay=errordisplay, windisplay=windisplay,
-                               lowdisplay=lowdisplay, highdisplay=highdisplay)
-
+                               lowdisplay=lowdisplay, highdisplay=highdisplay,
+                               currandom=currandom)
 
 @app.route('/reset', methods=['post'])
 def reset(): 
