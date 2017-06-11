@@ -18,15 +18,30 @@
             z-index: -1
             background-image: linear-gradient(300deg, grey, white);
         }
+        #guess {
+            position: relative; 
+            if result = "none"
+                top: 0px;
+            else
+                top: -50px;
+        }
         #win {
             height: 300px;
             width: 300px;
-            background-color: green;
+            background-color: green;            
+            display: {{windisplay}};
         }
-        #high, #low{
+        #high {
             height: 300px;
             width: 300px;
             background-color: red;
+            display: {{highdisplay}};
+        }
+        #low {
+            height: 300px;
+            width: 300px;
+            background-color: red;
+            display: {{lowdisplay}};
         }
         footer {
             margin-top: 100px;
@@ -49,9 +64,8 @@
             </div>
             <div id=low>
                 <h3>You're too low...</h3>
-            
             </div>
-            <form action="/checknumbers" method='post'>
+            <form id="guess" action="/checknumbers" method='post'>
                 <input type=text name="guess">
                 <input type=submit>
             </form>
