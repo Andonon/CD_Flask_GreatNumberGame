@@ -2,78 +2,122 @@
 Coding Dojo, Python and Flask fundamentals. Studying session data.
 Troy Center troycenter1@gmail.com June 2017'''
 #pylint: disable=c0111,c0103
-from flask import Flask, render_template, session, request
-
+import warnings
+from flask import Flask, render_template, session, request, redirect
 app = Flask(__name__)
-
 app.secret_key = 'a456lkas-049amp08a349u#$%ams'
-
 def getrandomnum():
     import random
     return random.randint(1, 100)
 
 @app.route('/')
-def greatnumbergame():
+def gamesetup():
+    #new game always starts with tiles hidden.
+    startdisplay = "block"
+    errordisplay = "none"
     windisplay = "none"
     lowdisplay = "none"
     highdisplay = "none"
-    result = "none"
-    return render_template('gng.html', result=result, windisplay=windisplay, 
+    session['gameon'] = False
+    return render_template('gng.html', startdisplay=startdisplay,
+                           errordisplay=errordisplay, windisplay=windisplay,
                            lowdisplay=lowdisplay, highdisplay=highdisplay)
 
 @app.route('/checknumbers', methods=['post'])
 def checknumbers():
-    print "===line 21 got post info==="
-    print "=== line 22 ===", request.form
-    random = 0
-    guess = int(request.form['guess'])
-    print "==line 26 Guess is==", guess
+    if session['gameon'] is True:
+        print "29 for gameon = ", session['gameon']
+        currandom = int(session['random'])
+        print "31 currrandom is ", currandom
+        print "32 got post: gameon was: ", session['gameon']
+        print request.form
+    elif session['gameon'] is False:
+        print "35 got post: gameon was: ", session['gameon']
+        print request.form
+        session['gameon'] = True
+        print "38 set gameon to", session['gameon']
+        session['random'] = int(getrandomnum())
+        currandom = int(session['random'])
+        print "41 === CurRandom was just reset ===", currandom
 
-    if session['npcnum'] == 0:
-        print "=== line 29 npcnum0=== ", session['npcnum']
-        session['npcnum'] = getrandomnum()
-        print "===line 31 npcnum1=== ", session['npcnum']
-        random = session['npcnum']
-        print "===line 33 npcnum2=== ", session['npcnum']
-        print "===line 34 random0=== ", session['npcnum']
-    else:
-        random = session['npcnum']
-        print "===line 28 did not run==="
-
-    print "==line 39 Randomnum is==", session['npcnum']
-
-    if random == guess:
-        print "===line 39 random is===: ", random
-        print "===line 40 guess is ===: ", guess
-        print "===line 41 I see a win==="
-        response = "win"
-        windisplay = "block"
+    #get the guess from the user input
+    print "44 === got request form ===: ", request.form
+    try: 
+        guess = int(request.form['guess'])
+        if currandom == guess:
+            print "48 --- currandom = ", currandom, " and guess = ", guess, " ---"
+            startdisplay = "none"
+            print "50 ---startdisplay = ", startdisplay
+            errordisplay = "none"
+            print "52---errordisplay = ", errordisplay
+            windisplay = "block"
+            print "54---windisplay = ", windisplay
+            lowdisplay = "none"
+            print "56---lowdisplay = ", lowdisplay
+            highdisplay = "none"
+            print "58---highdisplay = ", highdisplay
+            session['gameon'] = False
+            return render_template('gng.html', startdisplay=startdisplay,
+                                   errordisplay=errordisplay, windisplay=windisplay,
+                                   lowdisplay=lowdisplay, highdisplay=highdisplay)
+        elif currandom > guess:
+            print "64--- currandom = ", currandom, " and guess = ", guess, " ---"
+            startdisplay = "none"
+            print "66---startdisplay = ", startdisplay
+            errordisplay = "none"
+            print "68---errordisplay = ", errordisplay
+            windisplay = "none"
+            print "70---windisplay = ", windisplay
+            lowdisplay = "block"
+            print "72---lowdisplay = ", lowdisplay
+            highdisplay = "none"
+            print "74---highdisplay = ", highdisplay
+            session['gameon'] = True
+            print "76 session gameon = ", session['gameon']
+            return render_template('gng.html', startdisplay=startdisplay,
+                                   errordisplay=errordisplay, windisplay=windisplay,
+                                   lowdisplay=lowdisplay, highdisplay=highdisplay)
+        elif currandom < guess:
+            print "81 --- currandom = ", currandom, " and guess = ", guess, " ---"
+            startdisplay = "none"
+            print "83 ---startdisplay = ", startdisplay
+            errordisplay = "none"
+            print "85---errordisplay = ", errordisplay
+            windisplay = "none"
+            print "87---windisplay = ", windisplay
+            lowdisplay = "none"
+            print "89---lowdisplay = ", lowdisplay
+            highdisplay = "block"
+            print "91---highdisplay = ", highdisplay
+            session['gameon'] = True
+            print "93 session game on is ", session['gameon']
+            return render_template('gng.html', startdisplay=startdisplay,
+                                   errordisplay=errordisplay, windisplay=windisplay,
+                                   lowdisplay=lowdisplay, highdisplay=highdisplay)
+    except:
+        startdisplay = "none"
+        errordisplay = "block"
+        windisplay = "none"
         lowdisplay = "none"
         highdisplay = "none"
-        return render_template('gng.html', response=response,
-                               windisplay=windisplay, lowdisplay=lowdisplay,
-                               highdisplay=highdisplay)
-    elif random > guess:
-        print "===line 43 random is===: ", random
-        print "===line 44 guess is ===: ", guess
-        print "===line 45 I see you're too low==="
-        response = "low"
-        windisplay = "none"
-        lowdisplay = "block"
-        highdisplay = "none"
-        return render_template('gng.html', response=response,
-                               windisplay=windisplay, lowdisplay=lowdisplay,
-                               highdisplay=highdisplay)
-    elif random < guess:
-        print "===line 47 random is===: ", random
-        print "===line 48 guess is ===: ", guess
-        print "===line 49 I see you're too high.==="
-        response = "high"
-        windisplay = "none"
-        lowdisplay = "none"
-        highdisplay = "block"
-        return render_template('gng.html', response=response,
-                               windisplay=windisplay, lowdisplay=lowdisplay,
-                               highdisplay=highdisplay)
+        session['gameon'] = True
+        session['random'] = currandom
+        return render_template('gng.html', startdisplay=startdisplay,
+                               errordisplay=errordisplay, windisplay=windisplay,
+                               lowdisplay=lowdisplay, highdisplay=highdisplay)
+
+
+@app.route('/reset', methods=['post'])
+def reset(): 
+    startdisplay = "block"
+    errordisplay = "none"
+    windisplay = "none"
+    lowdisplay = "none"
+    highdisplay = "none"
+    session['gameon'] = False
+    return render_template('gng.html', startdisplay=startdisplay,
+                           errordisplay=errordisplay, windisplay=windisplay,
+                           lowdisplay=lowdisplay, highdisplay=highdisplay)
+
 
 app.run(debug=True)
